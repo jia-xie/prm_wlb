@@ -1,3 +1,0 @@
-[submodule "third_party/unitree_actuator_sdk"]
-	path = third_party/unitree_actuator_sdk
-	url = https://github.com/unitreerobotics/unitree_actuator_sdk.git
