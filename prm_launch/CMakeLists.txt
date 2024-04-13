@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(prm_wlb)
+project(prm_launch)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -17,19 +17,13 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
+# uncomment the following section in order to fill in
+# further dependencies manually.
+# find_package(<dependency> REQUIRED)
 
-include_directories(include)
-
-add_executable(MotorCtrlNode src/MotorCtrlNode.cpp)
-
-ament_target_dependencies(MotorCtrlNode
-  rclcpp
-)
-
-install (
-  TARGETS MotorCtrlNode
-  DESTINATION lib/${PROJECT_NAME}
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)
