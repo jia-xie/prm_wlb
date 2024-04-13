@@ -23,13 +23,14 @@ public:
     {
         close_uart();
     }
-
+    int read_data(char *buffer, size_t size);
+    bool write_data(const uint8_t *data, size_t size);
 private:
     std::string port_name;
     int uart_fd;
     void open_uart();
     void close_uart();
-    bool write_data(const uint8_t *data, size_t size);
+
 };
 
 #endif // UARTPORT_HPP
