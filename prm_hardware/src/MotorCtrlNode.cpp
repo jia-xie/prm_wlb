@@ -21,7 +21,7 @@ MotorCtrlNode::MotorCtrlNode(SerialPort *unitree_rs485_serial_port, UARTPort *ua
         std::bind(&MotorCtrlNode::unitree_motor_callback, this, std::placeholders::_1));
 
     this->lower_comm_timer_ = this->create_wall_timer(
-        std::chrono::milliseconds(10), // Timer interval
+        std::chrono::milliseconds(100), // Timer interval
         std::bind(&MotorCtrlNode::lower_comm_timer_callback, this));
     this->remote_publisher_ = this->create_publisher<prm_interfaces::msg::RemoteDR16>("remote_dr16", 10);
     RCLCPP_INFO_ONCE(this->get_logger(), "Motor Control Node Initialized");
