@@ -22,6 +22,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/StateMachine.msg"
   "msg/RemoteDR16.msg"
+  "msg/UnitreeMotor.msg"
 )
 
 ament_export_dependencies(rosidl_default_runtime)
