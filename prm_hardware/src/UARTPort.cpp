@@ -60,6 +60,7 @@ void UARTPort::open_uart() {
 // 0 for nothing, <0 for error, >0 for received
 int UARTPort::read_data(char *buffer, size_t size)
 {
+    tcflush(uart_fd, TCIFLUSH);
     int received = read(uart_fd, buffer, size);
     if (received < 0) {
         if (errno != EAGAIN && errno != EWOULDBLOCK) {

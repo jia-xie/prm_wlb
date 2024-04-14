@@ -1,13 +1,13 @@
 uint8 left_switch
 uint8 right_switch
-int16 left_joystick_x
-int16 left_joystick_y
-int16 right_joystick_x
-int16 right_joystick_y
-int16 dial_wheel
-int16 mouse_x
-int16 mouse_y
-int16 mouse_z
+float32 left_joystick_x
+float32 left_joystick_y
+float32 right_joystick_x
+float32 right_joystick_y
+float32 dial_wheel
+float32 mouse_x
+float32 mouse_y
+float32 mouse_z
 uint8 mouse_left
 uint8 mouse_right
 uint8 pressed_w
@@ -26,3 +26,4 @@ uint8 pressed_x
 uint8 pressed_c
 uint8 pressed_v
 uint8 pressed_b
+uint8 online_flag
