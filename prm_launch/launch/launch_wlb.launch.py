@@ -7,7 +7,7 @@ def generate_launch_description():
     # Node to control the motor
     motor_ctrl_node = Node(
         package="prm_hardware",
-        executable="MotorCtrlNode",
+        executable="LowerLevelCommNode",
         name="motor_ctrl_node"
     )
 

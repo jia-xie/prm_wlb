@@ -1,5 +1,5 @@
 /**
- * @file MotorCtrlNode.cpp
+ * @file LowerLevelCommNode.cpp
  * @brief Motor Control Header.
  *
  * @author Jia Xie
@@ -8,29 +8,29 @@
  *
  */
 #include <unistd.h>
-#include "MotorCtrlNode.hpp"
+#include "LowerLevelCommNode.hpp"
 
-MotorCtrlNode::MotorCtrlNode(SerialPort *unitree_rs485_serial_port, UARTPort *uart_port) : Node("motor_ctrl"),
+LowerLevelCommNode::LowerLevelCommNode(SerialPort *unitree_rs485_serial_port, UARTPort *uart_port) : Node("motor_ctrl"),
                                                                                            unitree_rs485(unitree_rs485_serial_port),
                                                                                            uart_port(uart_port)
 {
     this->unitree_motor_subscriber = this->create_subscription<prm_interfaces::msg::UnitreeMotor>(
         "unitree_motor_cmd", 10,
-        std::bind(&MotorCtrlNode::unitree_motor_callback, this, std::placeholders::_1));
+        std::bind(&LowerLevelCommNode::unitree_motor_callback, this, std::placeholders::_1));
 
     this->lower_comm_timer_ = this->create_wall_timer(
         std::chrono::milliseconds(1), // Timer interval
-        std::bind(&MotorCtrlNode::lower_comm_timer_callback, this));
+        std::bind(&LowerLevelCommNode::lower_comm_timer_callback, this));
     this->remote_publisher_ = this->create_publisher<prm_interfaces::msg::RemoteDR16Data>("remote_dr16", 10);
     RCLCPP_INFO_ONCE(this->get_logger(), "Motor Control Node Initialized");
 }
 
-MotorCtrlNode::~MotorCtrlNode()
+LowerLevelCommNode::~LowerLevelCommNode()
 {
     RCLCPP_INFO_ONCE(this->get_logger(), "Motor Control Node Terminated");
 }
 
-void MotorCtrlNode::unitree_motor_callback(const prm_interfaces::msg::UnitreeMotor::SharedPtr msg)
+void LowerLevelCommNode::unitree_motor_callback(const prm_interfaces::msg::UnitreeMotor::SharedPtr msg)
 {
     unitree_cmd.motorType = MotorType::GO_M8010_6;
     unitree_data.motorType = MotorType::GO_M8010_6;
@@ -49,7 +49,7 @@ void MotorCtrlNode::unitree_motor_callback(const prm_interfaces::msg::UnitreeMot
     // RCLCPP_INFO(this->get_logger(), "motor.merror: %f", unitree_data.merror);
 }
 
-void MotorCtrlNode::lower_comm_timer_callback()
+void LowerLevelCommNode::lower_comm_timer_callback()
 {
     constexpr int BUFFER_SIZE = 33 + 18;
     uint8_t buffer[BUFFER_SIZE];
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     rclcpp::init(argc, argv);
     SerialPort *unitree_rs485_serial_port = new SerialPort("/dev/ttyUSB0");
     UARTPort *uart_port = new UARTPort("/dev/ttyTHS0");
-    auto motor_ctrl_node = std::make_shared<MotorCtrlNode>(unitree_rs485_serial_port, uart_port);
-    rclcpp::spin(motor_ctrl_node);
+    auto lower_level_comm_node = std::make_shared<LowerLevelCommNode>(unitree_rs485_serial_port, uart_port);
+    rclcpp::spin(lower_level_comm_node);
     rclcpp::shutdown();
 }

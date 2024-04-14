@@ -1,5 +1,5 @@
 /**
- * @file MotorCtrlNode.hpp
+ * @file LowerLevelCommNode.hpp
  * @brief Motor Control Header.
  *
  * @author Jia Xie
@@ -14,16 +14,16 @@
 #include "prm_interfaces/msg/unitree_motor.hpp"
 #include "prm_interfaces/msg/remote_dr16_data.hpp"
 #include "serialPort/SerialPort.h"
-#include "UARTPort.hpp"
 #include "unitreeMotor/unitreeMotor.h"
-#include "RemoteDR16Driver.hpp"
+#include "driver/UARTPort.hpp"
+#include "driver/RemoteDR16Driver.hpp"
 
-class MotorCtrlNode : public rclcpp::Node
+class LowerLevelCommNode : public rclcpp::Node
 {
 public:
-    MotorCtrlNode(SerialPort *unitree_rs485_serial_port, UARTPort *uart_port);
+    LowerLevelCommNode(SerialPort *unitree_rs485_serial_port, UARTPort *uart_port);
 
-    ~MotorCtrlNode();
+    ~LowerLevelCommNode();
 private:
     RemoteDR16 remote_;
     prm_interfaces::msg::RemoteDR16Data remote_msg_;

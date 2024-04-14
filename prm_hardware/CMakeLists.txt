@@ -23,26 +23,26 @@ find_package(prm_interfaces REQUIRED) # purduerm interface (including srv msgs)
 include_directories(include)
 link_directories(lib)
 
-add_executable(MotorCtrlNode 
-  src/MotorCtrlNode.cpp
-  src/UARTPort.cpp
-  src/RemoteDR16Driver.cpp
+add_executable(LowerLevelCommNode 
+  src/LowerLevelCommNode.cpp
+  src/driver/UARTPort.cpp
+  src/driver/RemoteDR16Driver.cpp
 )
 
-target_link_libraries(MotorCtrlNode libUnitreeMotorSDK_Arm64.so)
+target_link_libraries(LowerLevelCommNode libUnitreeMotorSDK_Arm64.so)
 
-ament_target_dependencies(MotorCtrlNode
+ament_target_dependencies(LowerLevelCommNode
   rclcpp
   prm_interfaces
 )
 
-set_target_properties(MotorCtrlNode PROPERTIES
+set_target_properties(LowerLevelCommNode PROPERTIES
   INSTALL_RPATH "$ORIGIN"
   BUILD_WITH_INSTALL_RPATH TRUE
 )
 
 install (
-  TARGETS MotorCtrlNode
+  TARGETS LowerLevelCommNode
   DESTINATION lib/${PROJECT_NAME}
 )
 install(
