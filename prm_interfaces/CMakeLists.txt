@@ -21,7 +21,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/StateMachine.msg"
-  "msg/RemoteDR16.msg"
+  "msg/RemoteDR16Data.msg"
   "msg/UnitreeMotor.msg"
 )
 

@@ -25,7 +25,9 @@ link_directories(lib)
 
 add_executable(MotorCtrlNode 
   src/MotorCtrlNode.cpp
-  src/UARTPort.cpp)
+  src/UARTPort.cpp
+  src/RemoteDR16Driver.cpp
+)
 
 target_link_libraries(MotorCtrlNode libUnitreeMotorSDK_Arm64.so)
 
