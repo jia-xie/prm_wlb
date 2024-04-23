@@ -10,17 +10,21 @@
 #include <unistd.h>
 #include "LowerLevelCommNode.hpp"
 
-LowerLevelCommNode::LowerLevelCommNode(SerialPort *unitree_rs485_serial_port, UARTPort *uart_port) : Node("motor_ctrl"),
+LowerLevelCommNode::LowerLevelCommNode(SerialPort *unitree_rs485_serial_port, UARTPort *uart_port, CANPort *can_port) : Node("motor_ctrl"),
                                                                                            unitree_rs485(unitree_rs485_serial_port),
-                                                                                           uart_port(uart_port)
+                                                                                           uart_port(uart_port),
+                                                                                           can_port_(can_port)
 {
     this->unitree_motor_subscriber = this->create_subscription<prm_interfaces::msg::UnitreeMotor>(
         "unitree_motor_cmd", 10,
         std::bind(&LowerLevelCommNode::unitree_motor_callback, this, std::placeholders::_1));
 
-    this->lower_comm_timer_ = this->create_wall_timer(
+    this->uart_recv_timer_ = this->create_wall_timer(
         std::chrono::milliseconds(1), // Timer interval
-        std::bind(&LowerLevelCommNode::lower_comm_timer_callback, this));
+        std::bind(&LowerLevelCommNode::uart_recv_timer_callback, this));
+    this->can_recv_timer_ = this->create_wall_timer(
+        std::chrono::milliseconds(1), // Timer interval
+        std::bind(&LowerLevelCommNode::can_recv_timer_callback, this));
     this->remote_publisher_ = this->create_publisher<prm_interfaces::msg::RemoteDR16Data>("remote_dr16", 10);
     RCLCPP_INFO_ONCE(this->get_logger(), "Motor Control Node Initialized");
 }
@@ -49,7 +53,7 @@ void LowerLevelCommNode::unitree_motor_callback(const prm_interfaces::msg::Unitr
     // RCLCPP_INFO(this->get_logger(), "motor.merror: %f", unitree_data.merror);
 }
 
-void LowerLevelCommNode::lower_comm_timer_callback()
+void LowerLevelCommNode::uart_recv_timer_callback()
 {
     constexpr int BUFFER_SIZE = 33 + 18;
     uint8_t buffer[BUFFER_SIZE];
@@ -83,12 +87,29 @@ void LowerLevelCommNode::lower_comm_timer_callback()
     }
 }
 
+void LowerLevelCommNode::can_recv_timer_callback()
+{
+    can_frame frame;
+    frame.can_id = 0x123;
+    frame.can_dlc = 8;
+    frame.data[0] = 0xAA;
+    frame.data[1] = 0xBB;
+    frame.data[2] = 0xCC;
+    frame.data[3] = 0xDD;
+    frame.data[4] = 0xEE;
+    frame.data[5] = 0xFF;
+    frame.data[6] = 0x11;
+    frame.data[7] = 0x22;
+    can_port_->send(frame);
+}
+
 int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
     SerialPort *unitree_rs485_serial_port = new SerialPort("/dev/ttyUSB0");
     UARTPort *uart_port = new UARTPort("/dev/ttyTHS0");
-    auto lower_level_comm_node = std::make_shared<LowerLevelCommNode>(unitree_rs485_serial_port, uart_port);
+    CANPort *can_port = new CANPort("can0");
+    auto lower_level_comm_node = std::make_shared<LowerLevelCommNode>(unitree_rs485_serial_port, uart_port, can_port);
     rclcpp::spin(lower_level_comm_node);
     rclcpp::shutdown();
 }

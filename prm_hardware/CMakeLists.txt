@@ -27,6 +27,7 @@ add_executable(LowerLevelCommNode
   src/LowerLevelCommNode.cpp
   src/driver/UARTPort.cpp
   src/driver/RemoteDR16Driver.cpp
+  src/driver/CANPort.cpp
 )
 
 target_link_libraries(LowerLevelCommNode libUnitreeMotorSDK_Arm64.so)
